@@ -11,5 +11,8 @@ You can get the library prebuilt in the [Releases](https://github.com/xXTurnerLP
 1. Choose your preset `Release` or `Debug` and build the solution (`Build -> Build Solution`)
 1. In the `build` folder you can find your needed files
 
-# How to use
+# How to use in C++
 You can find a `test.cpp` file in the `example` folder, it contains all the info you need to use this library, if you still cant figure it out look at the source files (`SMBios.cpp` and `SMBios.hpp`)
+
+# How to use in C#
+In the `src` folder there is a class that can be used to interface with the library's DLL
