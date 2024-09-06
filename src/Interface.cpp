@@ -3,7 +3,7 @@
 #include <format>
 #include "SMBios.hpp"
 
-#define API __declspec(dllexport)
+#define API extern "C" __declspec(dllexport)
 
 static SMBios smbios;
 static bool initialized = false;
@@ -38,7 +38,11 @@ API void SMBIOS_Init()
 
 API const char* SMBIOS_GetVersion()
 {
-	return std::format("{}.{}", (int)smbios.GetVersion().major, (int)smbios.GetVersion().minor).c_str();
+	auto str = std::format("{}.{}", (int)smbios.GetVersion().major, (int)smbios.GetVersion().minor);
+	char* ptr = new char[str.size() + 1];
+	memcpy(ptr, str.data(), str.size());
+	ptr[str.size()] = '\0';
+	return ptr;
 }
 
 API int SMBIOS_GetBiosInfosCount()
