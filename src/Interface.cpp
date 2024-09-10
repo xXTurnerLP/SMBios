@@ -14,7 +14,7 @@ static std::vector<SMBIOSMotherboardInfo> motherboard_infos;
 static std::vector<SMBIOSProcessorInfo> processor_infos;
 static std::vector<SMBIOSMemoryDevice> memory_devices;
 
-void EnsureInit()
+bool EnsureInit()
 {
 	if (!initialized)
 	{
@@ -28,12 +28,15 @@ void EnsureInit()
 
 		initialized = true;
 	}
+
+	return smbios.IsValid();
 }
 
 // this should be called first from external code
-API void SMBIOS_Init()
+// returns false if the smbios fetch failed, if it failed its most likely due to a HWID spoofer/changer
+API bool SMBIOS_Init()
 {
-	EnsureInit();
+	return EnsureInit();
 }
 
 API const char* SMBIOS_GetVersion()

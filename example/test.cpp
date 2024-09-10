@@ -5,6 +5,12 @@ int main()
 {
 	SMBios smbios;
 
+	if (!smbios.IsValid())
+	{
+		std::cout << "Your PC has been tampered with, possible HWID changer detected, cannot continue, aborted!";
+		Sleep(-1);
+	}
+
 	std::cout << "This PC's smbios specificaiton version: " << (int)smbios.GetVersion().major << "." << (int)smbios.GetVersion().minor << std::endl;
 
 	smbios.ParseTables(); // this needs to be called first before accessing any tables

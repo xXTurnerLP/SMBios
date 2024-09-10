@@ -3,21 +3,32 @@
 SMBios::SMBios()
 {
 	raw_data_len = GetSystemFirmwareTable('RSMB', 0, NULL, 0);
+
 	if (raw_data_len == 0)
+	{
+		is_valid = false;
 		return;
+	}
 
 	raw_data = new byte[raw_data_len];
 	if (raw_data_len != GetSystemFirmwareTable('RSMB', 0, raw_data, raw_data_len))
 	{
+		is_valid = false;
 		return;
 	}
 
+	is_valid = true;
 	smbios_raw_data = (RawSMBIOSData*)raw_data;
 }
 
 SMBios::~SMBios()
 {
 	delete[] raw_data;
+}
+
+bool SMBios::IsValid()
+{
+	return is_valid;
 }
 
 SMBIOSVersion SMBios::GetVersion()

@@ -176,6 +176,7 @@ public:
 	~SMBios();
 
 public:
+	bool IsValid();
 	SMBIOSVersion GetVersion();
 	void ParseTables();
 	std::vector<SMBIOSBiosInfo> GetBiosInfos();
@@ -197,6 +198,7 @@ private:
 	std::vector<SMBIOSMotherboardInfo> motherboard_infos;
 	std::vector<SMBIOSProcessorInfo> processor_infos;
 	std::vector<SMBIOSMemoryDevice> memory_devices;
+	bool is_valid = false;
 
 private:
 	struct RawSMBIOSData
