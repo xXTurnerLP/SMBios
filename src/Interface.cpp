@@ -5,8 +5,7 @@
 
 #define API extern "C" __declspec(dllexport)
 
-static SMBios smbios;
-static bool initialized = false;
+static SMBios* smbios;
 
 static std::vector<SMBIOSBiosInfo> bios_infos;
 static std::vector<SMBIOSSystemInfo> system_infos;
@@ -14,34 +13,40 @@ static std::vector<SMBIOSMotherboardInfo> motherboard_infos;
 static std::vector<SMBIOSProcessorInfo> processor_infos;
 static std::vector<SMBIOSMemoryDevice> memory_devices;
 
-bool EnsureInit()
+bool Init()
 {
-	if (!initialized)
-	{
-		smbios.ParseTables();
+	smbios = new SMBios();
 
-		bios_infos = smbios.GetBiosInfos();
-		system_infos = smbios.GetSystemInfos();
-		motherboard_infos = smbios.GetMotherboardInfos();
-		processor_infos = smbios.GetProcessorInfos();
-		memory_devices = smbios.GetMemoryDevices();
+	if (!smbios->IsValid())
+		return false;
 
-		initialized = true;
-	}
+	smbios->ParseTables();
 
-	return smbios.IsValid();
+	bios_infos = smbios->GetBiosInfos();
+	system_infos = smbios->GetSystemInfos();
+	motherboard_infos = smbios->GetMotherboardInfos();
+	processor_infos = smbios->GetProcessorInfos();
+	memory_devices = smbios->GetMemoryDevices();
+
+	return true;
 }
 
 // this should be called first from external code
 // returns false if the smbios fetch failed, if it failed its most likely due to a HWID spoofer/changer
 API bool SMBIOS_Init()
 {
-	return EnsureInit();
+	return Init();
+}
+
+// this should be called last to free up the memory used
+API void SMBIOS_Cleanup()
+{
+	delete smbios;
 }
 
 API const char* SMBIOS_GetVersion()
 {
-	auto str = std::format("{}.{}", (int)smbios.GetVersion().major, (int)smbios.GetVersion().minor);
+	auto str = std::format("{}.{}", (int)smbios->GetVersion().major, (int)smbios->GetVersion().minor);
 	char* ptr = new char[str.size() + 1];
 	memcpy(ptr, str.data(), str.size());
 	ptr[str.size()] = '\0';
