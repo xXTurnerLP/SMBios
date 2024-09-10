@@ -13,7 +13,7 @@ namespace SMBiosNS
 		const string dll_name = "SMBios.dll";
 
 		[DllImport(dll_name)]
-		static extern void SMBIOS_Init();
+		static extern bool SMBIOS_Init();
 
 		[DllImport(dll_name)]
 		static extern IntPtr SMBIOS_GetVersion();
@@ -313,7 +313,10 @@ namespace SMBiosNS
 
 		static SMBios()
 		{
-			SMBIOS_Init();
+			if (!SMBIOS_Init())
+			{
+				throw new InvalidOperationException("SMBIOS not supported");
+			}
 		}
 
 		static string UnmanagedToManagedAndFree(this IntPtr ptr)
