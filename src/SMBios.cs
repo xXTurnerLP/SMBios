@@ -16,6 +16,9 @@ namespace SMBiosNS
 		static extern bool SMBIOS_Init();
 
 		[DllImport(dll_name)]
+		static extern void SMBIOS_Cleanup();
+
+		[DllImport(dll_name)]
 		static extern IntPtr SMBIOS_GetVersion();
 
 		[DllImport(dll_name)]
